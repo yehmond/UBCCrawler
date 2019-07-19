@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QMessageBox, QPushButton, QTextBrowser, \
     QComboBox, QGridLayout, QWidget, QLabel, QLineEdit, QCheckBox
 from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QIcon
 from ubccrawler import seat_scraper
 import sys
 import json
@@ -14,6 +15,8 @@ class UBCCrawler(QMainWindow):
         super().__init__()
         self.debug = False
         self.path = ''
+        self.is_frozen = getattr(sys, 'frozen', False)
+        self.frozen_temp_path = getattr(sys, '_MEIPASS', '')
         self.initUI()
 
     def initUI(self):
@@ -79,16 +82,7 @@ class UBCCrawler(QMainWindow):
         self.general_seats_only = QCheckBox('General Seats Only', self)
         self.general_seats_only.resize(self.general_seats_only.sizeHint())
 
-
-        # TODO
-        if self.debug:
-            self.year_session.setCurrentText('2019W')
-            self.subject.setCurrentText('CPSC')
-            self.course_num.setCurrentText('310')
-            self.section.setCurrentText('L1E')
-            self.email.setText('raymondyeh98@gmail.com')
-        else:
-            self.loadYearSession()
+        self.loadYearSession()
 
         self.year_session.currentIndexChanged.connect(self.loadSubject)
         self.year_session.currentIndexChanged.connect(self.deleteStartHere)
@@ -133,9 +127,10 @@ class UBCCrawler(QMainWindow):
 
         self.year_session.addItem('Start Here')
 
-        self.path = os.getcwd()
-        if 'ubccrawler' not in self.path:
-            self.path += '/ubccrawler'
+        if self.is_frozen:
+            self.path = self.frozen_temp_path
+        else:
+            self.path = os.path.dirname(os.path.abspath(__file__))
 
         for f in os.listdir(self.path + '/resources'):
             if f.endswith('.json'):
@@ -179,7 +174,6 @@ class UBCCrawler(QMainWindow):
             self.section.addItems(data[self.subject.currentText()][self.course_num.currentText()])
 
         self.section.showPopup()
-
 
     def deleteStartHere(self):
 

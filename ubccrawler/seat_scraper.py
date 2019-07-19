@@ -124,7 +124,3 @@ class SeatScraper:
         print('Total runtime:', round(time.time() - self.start_time, 3), 'seconds')
         print('########################')
         print()
-
-
-
-
