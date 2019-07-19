@@ -233,8 +233,8 @@ class UBCCrawler(QMainWindow):
                                   self.section.currentText(),
                                   self.email.text(),
                                   self.general_seats_only.isChecked())
-
-        self.displayTable(table)
+        if table:
+            self.displayTable(table)
 
     def stop(self):
         """Stops crawling and re-enable drop down menu"""

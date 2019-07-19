@@ -66,11 +66,11 @@ class SeatScraper:
             print("Error connecting: ", e)
             print()
             print("Retrying...")
-            self.change_statusbar("Error connecting: " + str(e))
+            self.change_statusbar("Error connecting: " + str(e) + ". Retrying...")
             return {}
         except requests.exceptions.Timeout as e:
             print("Request time out")
-            self.change_statusbar("Request time out" + str(e))
+            self.change_statusbar("Request time out: " + str(e) + ". Retrying...")
             return {}
         except requests.exceptions.HTTPError as e:
             print("HTTP Error!", e)
